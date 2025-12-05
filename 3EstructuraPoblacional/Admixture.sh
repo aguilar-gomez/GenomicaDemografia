@@ -2,9 +2,22 @@
 . /u/local/Modules/default/init/modules.sh
 #load plink #(v1.90b6.24)
 module load plink/1.90b624
+module load vcftools
 
-#use plink to convert vcf directly to bed format:
-plink --vcf briceiOutgroupAll_maf2_Thinned10Kb.vcf.gz --double-id --make-bed --out briceiOutgroupAll_maf2_Thinned10Kb
+###############################
+#Apply thinning and compress the result
+###############################
+vcftools --vcf tmp_maf_filtered.recode.vcf --recode --thin 10000 --recode-INFO-all \
+  --stdout | bgzip -c > briceiOutgroupAll_maf2_Thinned10Kb.vcf.gz
+###############################
+# Prepare data for ADMIXTURE
+###############################
+# Convert PLINK files to the correct format
+plink --bfile finwhale \
+      --make-bed \
+      --allow-extra-chr \
+      --out finwhale_admix
+
 
 ADMIXTURE=/u/project/klohmuel/mkenfiel/OutgroupSpecies/RicesWhale/admixture/dist/admixture_linux-1.3.0/admixture
 #run admixture for a K of 1-10, using cross-validation, with 10 threads
