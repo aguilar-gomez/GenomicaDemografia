@@ -1,3 +1,0 @@
-#PCA 
-plink --vcf bricei_simplePASS_variants_all.vcf.gz --make-bed --out bricei --allow-extra-chr
-plink --bfile bricei --pca --allow-extra-chr --out bricei_pca
