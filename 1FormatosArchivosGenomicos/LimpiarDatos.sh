@@ -21,29 +21,6 @@ bcftools view -m2 -M2 -v snps subsetfinWhale_PASS_VAR.vcf.gz \
     -Oz -o subsetfinWhale_PASS_VAR_biallelicSNPs.vcf.gz
 
 bcftools index subsetfinWhale_PASS_VAR_biallelicSNPs.vcf.gz
-###############################
-# Convert to PLINK and run PCA
-###############################
-plink --vcf subsetfinWhale_PASS_VAR_biallelicSNPs.vcf.gz \
-      --make-bed \
-      --out finwhale \
-      --allow-extra-chr \
-      --double-id \
-      --keep-allele-order
 
-plink --bfile finwhale \
-      --pca \
-      --maf 0.05 \
-      --allow-extra-chr \
-      --out finwhale_pca
-
-###############################
-# Prepare data for ADMIXTURE
-###############################
-# Convert PLINK files to the correct format
-plink --bfile finwhale \
-      --make-bed \
-      --allow-extra-chr \
-      --out finwhale_admix
 
 
