@@ -34,12 +34,14 @@ plink --vcf subsetfinWhale_PASS_VAR_biallelicSNPs_Thinned10Kb.vcf.gz \
 ###############################
 # Run ADMIXTURE K=1–10
 ###############################
+#Rename chromosome 21 
+awk '{ $1 = 21; print }' finwhale.bim > tmp && mv tmp finwhale.bim
 
 ADMIXTURE=/u/project/klohmuel/mkenfiel/OutgroupSpecies/RicesWhale/admixture/dist/admixture_linux-1.3.0/admixture
 
-for K in 1 2 3 4 5 6 7 8 9 10
+for K in 1 2 3 
 do
-    $ADMIXTURE --cv -j10 finwhale_admix.bed $K | tee log${K}.out
+    $ADMIXTURE --cv -j1 finwhale.bed  $K | tee log${K}.out
 done
 
 ############ AFTER JOB ############
