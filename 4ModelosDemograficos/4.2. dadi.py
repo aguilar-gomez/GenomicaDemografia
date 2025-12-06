@@ -191,29 +191,59 @@ plt.show()
 # 5. OPTIMIZAR UN EJEMPLO 2D
 # -------------------------------------------------------------------
 
+# Cargar SFS 2D
 data_2d = dadi.Spectrum.from_file("fake_2D.fs")
+
+# Definir modelo (split simétrico)
 func2 = split_mig_sym
 func2_ex = dadi.Numerics.make_extrap_log_func(func2)
 
-p0 = [0.5, 0.1]
+# Grid sizes para extrapolación
+pts_l = [40, 50, 60]
+
+# Parámetros iniciales y límites
+p0 = [0.5, 0.1]   # [T, m]
 lower = [1e-3, 0]
 upper = [10, 10]
 
 print("\nOptimizando 2D modelo split + migración...")
-popt2 = dadi.Inference.optimize_log(p0, data_2d, func2_ex, pts_l,
-                                    lower_bound=lower, upper_bound=upper,
-                                    verbose=len(p0))
 
+popt2 = dadi.Inference.optimize_log(
+    p0, data_2d, func2_ex, pts_l,
+    lower_bound=lower, upper_bound=upper,
+    verbose=len(p0)
+)
+
+# Modelo optimizado
 model2 = func2_ex(popt2, data_2d.sample_sizes, pts_l)
+
+# Likelihood y theta
 ll2 = dadi.Inference.ll_multinom(model2, data_2d)
 theta2 = dadi.Inference.optimal_sfs_scaling(model2, data_2d)
 
 print("\nRESULTADOS 2D:")
-print("Parametros óptimos:", popt2)
+print("Parámetros óptimos:", popt2)
 print("Log-likelihood:", ll2)
+print("Theta:", theta2)
 
-dadi.Plotting.plot_single_2d_sfs(model2)
+# ------------------------------------------------------------
+# Gráficas con funciones disponibles en tu versión de dadi
+# ------------------------------------------------------------
+
+# 1) SFS observado vs modelo
+plt.figure(figsize=(6,5))
+dadi.Plotting.plot_2d_comp_Poisson(model2, data_2d)
+plt.title("Comparación 2D modelo vs datos (Poisson)")
+plt.tight_layout()
 plt.savefig("2D_model_fit.png", dpi=300)
+plt.close()
 
+# 2) SFS observado solamente
+plt.figure(figsize=(6,5))
+dadi.Plotting.plot_single_2d_sfs(data_2d)
+plt.title("SFS observado (2D)")
+plt.tight_layout()
+plt.savefig("2D_SFS_observed.png", dpi=300)
+plt.close()
 
-print("\nListo: SFS falsos generados, modelos ajustados y gráficas guardadas.")
+print("\nListo: análisis 2D optimizado y gráficas guardadas.")
