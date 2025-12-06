@@ -163,7 +163,11 @@ print("Parametros óptimos:", popt)
 print("Log-likelihood:", ll)
 print("Theta:", theta)
 
-dadi.Plotting.plot_1d_comp_multiline(model, data_1d)
+#dadi.Plotting.plot_1d_comp_multiline(model, data_1d)
+
+
+dadi.Plotting.plot_1d_comp(model, data_1d)
+plt.show()
 plt.savefig("1D_model_fit.png", dpi=300)
 
 
