@@ -163,12 +163,28 @@ print("Parametros óptimos:", popt)
 print("Log-likelihood:", ll)
 print("Theta:", theta)
 
-#dadi.Plotting.plot_1d_comp_multiline(model, data_1d)
+print("\nGraficando resultados 1D...\n")
 
-
-dadi.Plotting.plot_1d_comp(model, data_1d)
+# Plot SFS observado
+plt.figure(figsize=(6,4))
+dadi.Plotting.plot_1d_fs(data_1d)
+plt.title("SFS observado")
+plt.tight_layout()
 plt.show()
-plt.savefig("1D_model_fit.png", dpi=300)
+
+# Comparación Modelo vs Datos (Poisson)
+plt.figure(figsize=(6,4))
+dadi.Plotting.plot_1d_comp_Poisson(model, data_1d)
+plt.title("Modelo vs Datos (Poisson)")
+plt.tight_layout()
+plt.show()
+
+# Comparación Modelo vs Datos (Multinomial)
+plt.figure(figsize=(6,4))
+dadi.Plotting.plot_1d_comp_multinom(model, data_1d)
+plt.title("Modelo vs Datos (Multinomial)")
+plt.tight_layout()
+plt.show()
 
 
 # -------------------------------------------------------------------
