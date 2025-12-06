@@ -51,6 +51,39 @@ sfs2d.to_file(os.path.join(OUTDIR, "fake_2D.fs"))
 
 print("SFS falsos generados en:", OUTDIR)
 
+
+# ============================
+# GENERAR un SFS 1D realista
+# ============================
+import dadi
+
+ns = 30                      # tamaño de muestra
+pts_l = [40, 50, 60]         # puntos para extrapolación
+theta = 10000                # escalamiento (afecta las cuentas, no la forma)
+
+# Modelo Wright–Fisher neutral: población de tamaño constante
+def constant_model(params, ns, pts):
+    nu = params[0]
+    xx = dadi.Numerics.default_grid(pts)
+    phi = dadi.PhiManip.phi_1D(xx, nu=nu)
+    fs = dadi.Spectrum.from_phi(phi, ns, (xx,))
+    return fs
+
+func = dadi.Numerics.make_extrap_log_func(constant_model)
+
+# parámetros: [nu] = tamaño relativo (1 = constante)
+params = [1.0]
+model_sfs = func(params, ns, pts_l)
+
+# Escalamos el SFS para tener conteos realistas
+model_sfs = model_sfs * theta
+
+# Guardar
+model_sfs.to_file(os.path.join(OUTDIR, "realistic_1D.fs"))
+
+print("SFS 1D generado y guardado como realistic_1D.fs")
+
+
 # ---------------------------
 # 2) MODELOS 1D
 # ---------------------------
@@ -188,88 +221,4 @@ plt.tight_layout()
 plt.savefig(os.path.join(OUTDIR, "1D_model_comp.png"), dpi=300)
 plt.close()
 
-# ---------------------------
-# 5) AJUSTE 2D (ejemplo)
-# ---------------------------
-print("\n=== AJUSTE 2D: modelo split + migración simétrica (ejemplo) ===\n")
-data_2d = dadi.Spectrum.from_file(os.path.join(OUTDIR, "fake_2D.fs"))
-
-func2 = split_mig_sym
-func2_ex = dadi.Numerics.make_extrap_log_func(func2)
-
-# params iniciales [T, m]
-p0_2 = [0.5, 0.2]
-lower2 = [1e-4, 0.0]
-upper2 = [20, 20]
-
-# Intento de optimización con manejo de errores:
-try:
-    popt2 = dadi.Inference.optimize_log(p0_2, data_2d, func2_ex, pts_l,
-                                        lower_bound=lower2, upper_bound=upper2,
-                                        verbose=len(p0_2))
-except Exception as e:
-    print("Primera optimización 2D falló:", e)
-    # Reintentar con otros puntos iniciales (prueba 2)
-    p0_try = [0.1, 0.01]
-    print("Reintentando con p0 =", p0_try)
-    try:
-        popt2 = dadi.Inference.optimize_log(p0_try, data_2d, func2_ex, pts_l,
-                                            lower_bound=lower2, upper_bound=upper2,
-                                            verbose=len(p0_try))
-    except Exception as e2:
-        print("Segunda optimización 2D también falló:", e2)
-        print("Abandonando optimización 2D y saliendo con error.")
-        raise e2
-
-# Si llegamos aquí, tenemos popt2
-model2 = func2_ex(popt2, data_2d.sample_sizes, pts_l)
-
-# Cálculo de likelihood y theta utilizando funciones disponibles
-try:
-    ll2 = dadi.Inference.ll_multinom(model2, data_2d)
-except Exception:
-    # fallback: si ll_multinom falla, intentar ll (menos común)
-    try:
-        ll2 = dadi.Inference.ll(model2, data_2d)
-    except Exception:
-        ll2 = float("nan")
-
-try:
-    theta2 = dadi.Inference.optimal_sfs_scaling(model2, data_2d)
-except Exception:
-    theta2 = float("nan")
-
-print("Parámetros óptimos (2D):", popt2)
-print("Log-likelihood (2D):", ll2)
-print("Theta (2D):", theta2)
-
-# ---------------------------
-# Guardar plots 2D (compatibles con tu versión)
-# ---------------------------
-# 1) Comparación modelo vs datos (Poisson o multinom)
-plt.figure(figsize=(6, 6))
-if hasattr(dadi.Plotting, "plot_2d_comp_Poisson"):
-    dadi.Plotting.plot_2d_comp_Poisson(model2, data_2d)
-elif hasattr(dadi.Plotting, "plot_2d_comp_multinom"):
-    dadi.Plotting.plot_2d_comp_multinom(model2, data_2d)
-else:
-    print("No hay función de comparación 2D disponible en dadi.Plotting")
-plt.title("2D: Modelo vs Datos")
-plt.tight_layout()
-plt.savefig(os.path.join(OUTDIR, "2D_model_comp.png"), dpi=300)
-plt.close()
-
-# 2) SFS observado (2D)
-plt.figure(figsize=(6, 6))
-if hasattr(dadi.Plotting, "plot_single_2d_sfs"):
-    dadi.Plotting.plot_single_2d_sfs(data_2d)
-else:
-    print("plot_single_2d_sfs no disponible")
-plt.title("2D: SFS observado")
-plt.tight_layout()
-plt.savefig(os.path.join(OUTDIR, "2D_SFS_observed.png"), dpi=300)
-plt.close()
-
-print("\nResultados y figuras guardadas en:", OUTDIR)
-print("Fin del script.")
 
