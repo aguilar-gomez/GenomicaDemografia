@@ -52,38 +52,6 @@ sfs2d.to_file(os.path.join(OUTDIR, "fake_2D.fs"))
 print("SFS falsos generados en:", OUTDIR)
 
 
-# ============================
-# GENERAR un SFS 1D realista
-# ============================
-import dadi
-
-ns = 30                      # tamaño de muestra
-pts_l = [40, 50, 60]         # puntos para extrapolación
-theta = 10000                # escalamiento (afecta las cuentas, no la forma)
-
-# Modelo Wright–Fisher neutral: población de tamaño constante
-def constant_model(params, ns, pts):
-    nu = params[0]
-    xx = dadi.Numerics.default_grid(pts)
-    phi = dadi.PhiManip.phi_1D(xx, nu=nu)
-    fs = dadi.Spectrum.from_phi(phi, ns, (xx,))
-    return fs
-
-func = dadi.Numerics.make_extrap_log_func(constant_model)
-
-# parámetros: [nu] = tamaño relativo (1 = constante)
-params = [1.0]
-model_sfs = func(params, ns, pts_l)
-
-# Escalamos el SFS para tener conteos realistas
-model_sfs = model_sfs * theta
-
-# Guardar
-model_sfs.to_file(os.path.join(OUTDIR, "realistic_1D.fs"))
-
-print("SFS 1D generado y guardado como realistic_1D.fs")
-
-
 # ---------------------------
 # 2) MODELOS 1D
 # ---------------------------
