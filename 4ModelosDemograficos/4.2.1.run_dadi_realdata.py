@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 import dadi
 
 # reproducibilidad
-np.random.seed(42)
+np.random.seed(1)
 # ---------------------------
 # 1) MODELOS 1D
 # ---------------------------
