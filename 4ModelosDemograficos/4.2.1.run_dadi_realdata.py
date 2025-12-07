@@ -129,6 +129,9 @@ p0 = [10, 10]
 lower = [1e-3, 1e-4]
 upper = [20, 20]
 
+
+p0 = dadi.Misc.perturb_params(p0, fold=1, upper_bound=upper, lower_bound=lower)
+
 popt1 = dadi.Inference.optimize_log(p0, data_1d, func_1d_ex, pts_l,
                                     lower_bound=lower, upper_bound=upper,
                                     verbose=len(p0))
