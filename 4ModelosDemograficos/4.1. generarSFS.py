@@ -1,70 +1,61 @@
-#!/usr/bin/env python3
-
-import allel
+pip3 install vcfpy --user
+#########################################
+import vcfpy
 import numpy as np
 import dadi
 
-# -----------------------------
-# INPUT
-# -----------------------------
-vcf_file = "Passing_biallelic_var_19-21.vcf.gz"
-pop1 = ["ENPWA14", "ENPCA08", "ENPBC18" ,"ENPAK29", "ENPBC16" ]     # Cambia a tus IDs
-pop2 = ["GOC091",  "GOC010",  "GOC082" , "GOC050" , "GOC038" ]     # Para 2D SFS (opcional)
+# ---- Define populations ----
+pop1 = ["ENPWA14", "ENPCA08", "ENPBC18", "ENPAK29", "ENPBC16"]
+pop2 = ["GOC091", "GOC010", "GOC082", "GOC050", "GOC038"]
 
-# -----------------------------
-# LOAD VCF
-# -----------------------------
-callset = allel.read_vcf(vcf_file, fields=["samples", "calldata/GT"])
-samples = callset["samples"]
-gt = allel.GenotypeArray(callset["calldata/GT"])
+vcf_path = "Passing_biallelic_var_19-21.vcf.gz"
 
-# -----------------------------
-# POPULATION INDEXING
-# -----------------------------
-# Función para encontrar índices de individuos
-def get_idx(pop_list):
-    return [np.where(samples == i)[0][0] for i in pop_list]
+# ---- Load VCF ----
+reader = vcfpy.Reader.from_path(vcf_path)
 
-idx1 = get_idx(pop1)
-idx2 = get_idx(pop2)
+# Check that samples exist
+vcf_samples = reader.header.samples.names
+for s in pop1 + pop2:
+    if s not in vcf_samples:
+        raise ValueError("Sample {} not found in VCF".format(s))
 
-# -----------------------------
-# 1D SFS
-# -----------------------------
-ac1 = gt[:, idx1].count_alleles()
-# Solo referencia/alternativa (bialélico)
-ac1 = ac1[:, :2]
+# ---- Prepare SFS arrays ----
+n1 = len(pop1)
+n2 = len(pop2)
+sfs = np.zeros((n1+1, n2+1), dtype=int)
 
-# Conteo de alelo alternativo
-allele_counts1 = ac1[:, 1]
-n_chrom = len(idx1) * 2
+# ---- Iterate over SNPs ----
+for record in reader:
+    # Skip non-biallelic
+    if len(record.ALT) != 1:
+        continue
 
-# Bins del SFS
-sfs1d = np.histogram(allele_counts1, bins=np.arange(n_chrom+2))[0]
+    # Count alt alleles in each population
+    ac1 = 0
+    ac2 = 0
 
-# Convertir a dadi Spectrum
-spectrum1d = dadi.Spectrum(sfs1d)
+    for s in pop1:
+        gt = record.call_for_sample[s].gt_bases
+        if gt:
+            alleles = gt.split("/")
+            ac1 += alleles.count(record.ALT[0].value)
 
-spectrum1d.to_file("SFS_1D.fs")
-print("Archivo generado: SFS_1D.fs")
+    for s in pop2:
+        gt = record.call_for_sample[s].gt_bases
+        if gt:
+            alleles = gt.split("/")
+            ac2 += alleles.count(record.ALT[0].value)
 
+    # Fill SFS cell
+    if 0 <= ac1 <= n1*2 and 0 <= ac2 <= n2*2:
+        # Convert from chromosome counts (0..2n) to frequency bins (0..n)
+        # dadi expects haploid counts → bin by haploid copies
+        sfs[ac1, ac2] += 1
 
-# -----------------------------
-# 2D SFS  (si quieres 2 poblaciones)
-# -----------------------------
-ac1 = gt[:, idx1].count_alleles()[:, 1]
-ac2 = gt[:, idx2].count_alleles()[:, 1]
+# ---- Create dadi Spectrum ----
+fs = dadi.Spectrum(sfs, mask_corners=True)
 
-n1 = len(idx1)*2
-n2 = len(idx2)*2
+# ---- Save ----
+fs.to_file("SFS_2D.fs")
+print("Saved 2D SFS → SFS_2D.fs")
 
-sfs2d = np.histogram2d(
-    ac1,
-    ac2,
-    bins=[np.arange(n1+2), np.arange(n2+2)]
-)[0]
-
-spectrum2d = dadi.Spectrum(sfs2d)
-
-spectrum2d.to_file("SFS_2D.fs")
-print("Archivo generado: SFS_2D.fs")
