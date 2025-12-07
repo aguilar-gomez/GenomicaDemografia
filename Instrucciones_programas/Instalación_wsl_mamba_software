@@ -15,7 +15,6 @@ wsl --install
 
 
 
-
 ###### Instalación de mamba
 
 -Una vez terminado el proceso de instalación de wsl procede a bajar e instalar mamba, que es un manejador de paqueterias rápido.
@@ -47,7 +46,7 @@ bash Miniforge3-$(uname)-$(uname -m).sh
 
 
 
-##### Creando ambientes en mamba
+###### Creando ambientes en mamba
 
 - Ahora crea los siguientes ambientes en mamba de la siguiente manera:
 
@@ -70,4 +69,12 @@ mamba install -c bioconda samtools=1.21
 - Prueba tu instalación de pixy:
 
 pixy --help
+
+
+
+
+
+
+
+
 
