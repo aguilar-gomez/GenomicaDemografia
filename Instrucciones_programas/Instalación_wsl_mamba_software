@@ -65,6 +65,7 @@ mamba activate pixy
 mamba install -c conda-forge pixy
 mamba install -c bioconda htslib
 mamba install -c bioconda samtools=1.21
+mamba install -c bioconda vcftools
 
 - Prueba tu instalación de pixy:
 
