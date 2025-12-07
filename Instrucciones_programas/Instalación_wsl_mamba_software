@@ -1,0 +1,80 @@
+Instrucciones para instalar wsl (windows subsystem for linux y mamba)
+
+
+###### Instalación de wsl
+
+- Abran el programa PowerShell en modo administrador (click derecho sobre icono de PowersShell y seleccionen ejecutar como administrador)
+Una vez en PowerShell procede a instalar wsl con el siguiente comando:
+
+wsl --install
+
+- Va empezar a descargar e instalar wsl y ubuntu. 
+
+- Al terminar te va a pedir escribir un nombre de usuario y contraseña, hazlo. Esto es para la distribucion de ubuntu. Después de esto la terminal de PowerShell tendrá un formato Linux.
+
+
+
+
+###### Instalación de mamba
+
+-Una vez terminado el proceso de instalación de wsl procede a bajar e instalar mamba, que es un manejador de paqueterias rápido.
+ Para esto escribe el siguiente comando:
+
+wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+
+
+-Despues corre la siguiente linea de comando para correr el script the instalación
+
+bash Miniforge3-$(uname)-$(uname -m).sh
+
+
+- Después de correr el comando anterior, te va a pedir que revises la licencia de acuerdo y que presiones Enter para continuar, hazlo.
+
+- Después de leer los términos te preguntará si aceptas la licencia, indica que sí.
+
+- Te dirá el path donde guardará miniforge, con la opción de aceptarlo, abortar (Ctrl- C), o indicar otra ubicación, en este caso si lo guarda en tu home de ubuntu, pon aceptar.
+
+- Presiona Enter para confirmar la ubicación.
+
+- Te dará la opción de proceder a la inicialización de miniforge, di que sí.
+
+- Para que funcione mamba tienes que cerrar wsl y volver a entrar. Para cerrar tu sesión escribe exit y dale enter.
+
+- Ahora entra de nuevo poniendo wsl
+
+- Si todo salió correcto, entonces tendrías que estar en el ambiente base.
+
+
+
+###### Creando ambientes en mamba
+
+- Ahora crea los siguientes ambientes en mamba de la siguiente manera:
+
+Salte del ambiente base escribiendo:
+
+mamba deactivate
+
+
+- Crea un ambiente para pixy:
+
+mamba create -n "pixy" python=3.11
+mamba activate pixy
+
+- Ahora instala pixy, htslib, y samtools 1.21:
+
+mamba install -c conda-forge pixy
+mamba install -c bioconda htslib
+mamba install -c bioconda samtools=1.21
+
+- Prueba tu instalación de pixy:
+
+pixy --help
+
+
+
+
+
+
+
+
+

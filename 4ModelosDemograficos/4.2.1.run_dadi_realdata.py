@@ -117,16 +117,26 @@ def secondary_contact(params, ns, pts):
 
 print("\n=== AJUSTE 1D: modelo de 2 épocas (ejemplo) ===\n")
 data_1d = dadi.Spectrum.from_file("ENP-46.sfs")
+
+# check if it's folded, if not folded, fold it
+if data_1d.folded==False:
+    data_1d=data_1d.fold()
+
 func_1d = model_2epoch
+func_1d = dadi.Demographics1D.two_epoch 
 func_1d_ex = dadi.Numerics.make_extrap_log_func(func_1d)
+
 
 ns = data_1d.sample_sizes # get sample size from SFS (in haploids)
 pts_l = [ns[0]+5,ns[0]+15,ns[0]+25] # this should be slightly larger (+5) than sample size and increase by 10
 
 # params iniciales [Nu, T]
-p0 = [0.5, 0.2]
+p0 = [10, 10]
 lower = [1e-3, 1e-4]
 upper = [20, 20]
+
+
+p0 = dadi.Misc.perturb_params(p0, fold=1, upper_bound=upper, lower_bound=lower)
 
 popt1 = dadi.Inference.optimize_log(p0, data_1d, func_1d_ex, pts_l,
                                     lower_bound=lower, upper_bound=upper,
@@ -155,15 +165,20 @@ plt.savefig(os.path.join("1D_SFS_ENP_observed.png"), dpi=300)
 plt.close()
 
 plt.figure(figsize=(6, 4))
-if hasattr(dadi.Plotting, "plot_1d_comp_Poisson"):
-    dadi.Plotting.plot_1d_comp_Poisson(model1, data_1d)
-elif hasattr(dadi.Plotting, "plot_1d_comp_multinom"):
-    dadi.Plotting.plot_1d_comp_multinom(model1, data_1d)
-else:
-    print("No hay función de comparación 1D disponible")
+dadi.Plotting.plot_1d_comp_multinom(model1, data_1d)
 plt.title("Comparación: modelo vs datos (1D)")
 plt.tight_layout()
 plt.savefig(os.path.join("1D_model_ENP_2epoch.png"), dpi=300)
 plt.close()
 
 print(model1)
+
+#Scale parameters
+mu=2.77e-8
+L=395043265
+Nanc=theta1 / (4*mu*L)
+nu_scaled_dip=popt1[0]*Nanc
+T_scaled_gen=popt1[1]*2*Nanc # this is measured in generations 
+scaled_param_names=("Nanc_FromTheta_scaled_dip","nu_scaled_dip","T_scaled_gen")
+scaled_popt=(Nanc,nu_scaled_dip,T_scaled_gen)
+
