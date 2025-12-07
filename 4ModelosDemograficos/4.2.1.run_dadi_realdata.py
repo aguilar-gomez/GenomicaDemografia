@@ -119,7 +119,7 @@ print("\n=== AJUSTE 1D: modelo de 2 épocas (ejemplo) ===\n")
 data_1d = dadi.Spectrum.from_file("ENP-46.sfs")
 
 # check if it's folded, if not folded, fold it
-if fdata_1d.folded==False:
+if data_1d.folded==False:
     data_1d=data_1d.fold()
 
 func_1d = model_2epoch
