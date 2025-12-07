@@ -116,9 +116,10 @@ def secondary_contact(params, ns, pts):
 # ---------------------------
 
 print("\n=== AJUSTE 1D: modelo de 2 épocas (ejemplo) ===\n")
-data_1d = dadi.Spectrum.from_file("ENP-46.sfs")
+data_1d = dadi.Spectrum.from_file("ENP-46.sfs").fold()
 func_1d = model_2epoch
 func_1d_ex = dadi.Numerics.make_extrap_log_func(func_1d)
+
 
 ns = data_1d.sample_sizes # get sample size from SFS (in haploids)
 pts_l = [ns[0]+5,ns[0]+15,ns[0]+25] # this should be slightly larger (+5) than sample size and increase by 10
