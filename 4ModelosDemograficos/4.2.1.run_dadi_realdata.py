@@ -165,12 +165,7 @@ plt.savefig(os.path.join("1D_SFS_ENP_observed.png"), dpi=300)
 plt.close()
 
 plt.figure(figsize=(6, 4))
-if hasattr(dadi.Plotting, "plot_1d_comp_Poisson"):
-    dadi.Plotting.plot_1d_comp_Poisson(model1, data_1d)
-elif hasattr(dadi.Plotting, "plot_1d_comp_multinom"):
-    dadi.Plotting.plot_1d_comp_multinom(model1, data_1d)
-else:
-    print("No hay función de comparación 1D disponible")
+dadi.Plotting.plot_1d_comp_multinom(model1, data_1d)
 plt.title("Comparación: modelo vs datos (1D)")
 plt.tight_layout()
 plt.savefig(os.path.join("1D_model_ENP_2epoch.png"), dpi=300)
