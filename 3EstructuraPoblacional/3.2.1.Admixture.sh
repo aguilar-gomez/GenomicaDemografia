@@ -41,7 +41,7 @@ ADMIXTURE=/u/project/klohmuel/mkenfiel/OutgroupSpecies/RicesWhale/admixture/dist
 
 for K in 1 2 3 
 do
-    $ADMIXTURE --cv -j1 finwhale.bed  $K | tee log${K}.out
+    admixture --cv -j1 finwhale.bed  $K | tee log${K}.out
 done
 
 ############ AFTER JOB ############
