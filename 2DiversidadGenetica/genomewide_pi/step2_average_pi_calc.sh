@@ -30,7 +30,7 @@ awk 'NR>1 && $1=="GOC"' ${input} >> GOC_pi.txt
 
 # compute means of avg_pi (column 5)
 awk 'NR>1 {sum+=$5;n++} END {print "ENP mean pi:",sum/n}' ENP_pi.txt > mean_pi.txt
-awk 'NR>1 {sum+=$5;n++} END {print "GOC mean pi:",sum/n}' GOC_pi.txt >> mean_pi.txt
+awk 'NR>1 {sum+=$5;n++} END {print "GOC mean pi:",sum/n}' GOC_pi.txt > mean_pi.txt
 
 mamba deactivate
 
