@@ -166,4 +166,4 @@ plt.tight_layout()
 plt.savefig(os.path.join("1D_model_ENP_2epoch.png"), dpi=300)
 plt.close()
 
-print(model)
+print(model1)
