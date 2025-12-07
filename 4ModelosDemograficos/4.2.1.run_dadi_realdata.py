@@ -112,9 +112,9 @@ def secondary_contact(params, ns, pts):
 # ---------------------------
 # 4) AJUSTE 1D (ejemplo)
 # ---------------------------
-DIR="../data/sfs"
+
 print("\n=== AJUSTE 1D: modelo de 2 épocas (ejemplo) ===\n")
-data_1d = dadi.Spectrum.from_file(os.path.join(DIR, "ENP-46.sfs"))
+data_1d = dadi.Spectrum.from_file("ENP-46.sfs")
 func_1d = model_2epoch
 func_1d_ex = dadi.Numerics.make_extrap_log_func(func_1d)
 
@@ -143,7 +143,7 @@ else:
     print("plot_1d_fs no disponible")
 plt.title("SFS observado (1D)")
 plt.tight_layout()
-plt.savefig(os.path.join(OUTDIR, "1D_SFS_observed.png"), dpi=300)
+plt.savefig(os.path.join("1D_SFS_ENP_observed.png"), dpi=300)
 plt.close()
 
 plt.figure(figsize=(6, 4))
@@ -155,6 +155,6 @@ else:
     print("No hay función de comparación 1D disponible")
 plt.title("Comparación: modelo vs datos (1D)")
 plt.tight_layout()
-plt.savefig(os.path.join(OUTDIR, "1D_model_comp.png"), dpi=300)
+plt.savefig(os.path.join("1D_model_ENP_2epoch.png"), dpi=300)
 plt.close()
 
