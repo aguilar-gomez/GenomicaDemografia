@@ -172,3 +172,13 @@ plt.savefig(os.path.join("1D_model_ENP_2epoch.png"), dpi=300)
 plt.close()
 
 print(model1)
+
+#Scale parameters
+mu=2.77e-8
+L=395043265
+Nanc=theta1 / (4*mu*L)
+nu_scaled_dip=popt1[0]*Nanc
+T_scaled_gen=popt1[1]*2*Nanc # this is measured in generations 
+scaled_param_names=("Nanc_FromTheta_scaled_dip","nu_scaled_dip","T_scaled_gen")
+scaled_popt=(Nanc,nu_scaled_dip,T_scaled_gen)
+
