@@ -72,6 +72,31 @@ pixy --help
 
 
 
+Ahora vamos a crear otro ambiente para tener otros programas con versiones más actualizadas
+
+- Desactiva el ambiente pixy con el siguiente comando:
+
+mamba deactivate
+
+- Crea un nuevo ambiente con 
+
+
+mamba create -n "workshop"
+
+- activa el ambiente:
+
+mamba activate workshop
+
+Ahora instala los siguientes programas:
+
+mamba install -c bioconda dadi
+mamba install -c bioconda bwa
+mamba install -c bioconda fastqc
+mamba install -c bioconda samtools
+mamba install -c bioconda bcftools
+mamba install -c bioconda vcftools
+mamba install -c bioconda htslib
+mamba install -c bioconda plink
 
 
 
