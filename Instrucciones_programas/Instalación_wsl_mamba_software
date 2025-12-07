@@ -79,7 +79,7 @@ Ahora vamos a crear otro ambiente para tener otros programas con versiones más 
 
 mamba deactivate
 
-- Crea un nuevo ambiente con 
+- Crea un nuevo ambiente con: 
 
 
 mamba create -n "workshop"
@@ -102,6 +102,24 @@ mamba install -c bioconda admixture
 mamba install -c bioconda trimmomatic
 
 
+
+- Finalmente vamos a crear el ambiente pysam
+
+mamba create -n "pysam"
+
+- Activa el ambiente:
+
+mamba activate pysam
+
+
+- Ahora instala pysam:
+
+mamba install -c bioconda pysam
+
+
+-Desactiva el ambiente:
+
+mamba deactivate
 
 
 
