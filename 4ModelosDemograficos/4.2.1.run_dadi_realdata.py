@@ -20,10 +20,6 @@ import matplotlib.pyplot as plt
 
 import dadi
 
-
-# Grid points para extrapolación
-pts_l = [40, 50, 60]
-
 # reproducibilidad
 np.random.seed(42)
 # ---------------------------
@@ -124,6 +120,9 @@ data_1d = dadi.Spectrum.from_file("ENP-46.sfs")
 func_1d = model_2epoch
 func_1d_ex = dadi.Numerics.make_extrap_log_func(func_1d)
 
+ns = data_1d.sample_sizes # get sample size from SFS (in haploids)
+pts_l = [ns[0]+5,ns[0]+15,ns[0]+25] # this should be slightly larger (+5) than sample size and increase by 10
+
 # params iniciales [Nu, T]
 p0 = [0.5, 0.2]
 lower = [1e-3, 1e-4]
@@ -134,11 +133,14 @@ popt1 = dadi.Inference.optimize_log(p0, data_1d, func_1d_ex, pts_l,
                                     verbose=len(p0))
 
 model1 = func_1d_ex(popt1, data_1d.sample_sizes, pts_l)
+#Log likelihood of the model
 ll1 = dadi.Inference.ll_multinom(model1, data_1d)
+lld = dadi.Inference.ll_multinom(data_1d, data_1d)
+
 theta1 = dadi.Inference.optimal_sfs_scaling(model1, data_1d)
 
 print("Parámetros óptimos (1D):", popt1)
-print("Log-likelihood (1D):", ll1)
+print("Log-likelihood (1D):", ll1, lld)
 print("Theta (1D):", theta1)
 
 # Guardar plots 1D
@@ -164,3 +166,4 @@ plt.tight_layout()
 plt.savefig(os.path.join("1D_model_ENP_2epoch.png"), dpi=300)
 plt.close()
 
+print(model)
