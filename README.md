@@ -32,3 +32,14 @@ Además, aprenderemos a preparar los datos correctamente para estos análisis:
 - Convertir el VCF a formato PLINK y generar los archivos necesarios para cada método.
 
 Esta parte nos permitirá identificar patrones de estructura poblacional en nuestros datos, visualizar relaciones entre muestras y establecer el contexto para análisis más avanzados de demografía e historia evolutiva.
+
+
+## 4. Modelos demográficos
+
+Los modelos demográficos permiten reconstruir la historia poblacional a partir de datos genómicos, identificando cambios en tamaño efectivo, divergencias y flujo génico.
+
+- PSMC:
+Infiere cambios históricos en tamaño efectivo usando un solo genoma de alta cobertura. Modela la heterocigosidad a lo largo del genoma para detectar cuellos de botella, expansiones y contracciones. Tiene buena resolución en tiempos antiguos.
+
+- dadi:
+Utiliza el espectro de frecuencias alélicas (SFS) para ajustar modelos demográficos explícitos. Permite analizar múltiples poblaciones, probar escenarios con flujo génico y detectar eventos recientes como expansiones o cuellos de botella.
