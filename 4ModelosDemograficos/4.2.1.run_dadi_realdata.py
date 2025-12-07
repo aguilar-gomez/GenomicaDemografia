@@ -117,7 +117,13 @@ def secondary_contact(params, ns, pts):
 
 print("\n=== AJUSTE 1D: modelo de 2 épocas (ejemplo) ===\n")
 data_1d = dadi.Spectrum.from_file("ENP-46.sfs")
+
+# check if it's folded, if not folded, fold it
+if fdata_1d.folded==False:
+    data_1d=data_1d.fold()
+
 func_1d = model_2epoch
+func_1d = dadi.Demographics1D.two_epoch 
 func_1d_ex = dadi.Numerics.make_extrap_log_func(func_1d)
 
 
