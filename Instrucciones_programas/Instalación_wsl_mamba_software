@@ -97,6 +97,8 @@ mamba install -c bioconda bcftools
 mamba install -c bioconda vcftools
 mamba install -c bioconda htslib
 mamba install -c bioconda plink
+mamba install -c bioconda admixture
+mamba install -c bioconda trimmomatic
 
 
 
