@@ -20,6 +20,12 @@ import matplotlib.pyplot as plt
 
 import dadi
 
+
+# Grid points para extrapolación
+pts_l = [40, 50, 60]
+
+# reproducibilidad
+np.random.seed(42)
 # ---------------------------
 # 1) MODELOS 1D
 # ---------------------------
