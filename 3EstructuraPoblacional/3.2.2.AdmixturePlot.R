@@ -69,5 +69,5 @@ ggplot(data=log, aes(x=Kvalue, y=cross.validation.error, group=1)) +
   xlab("K")+
   scale_x_continuous(breaks = c(1:10))+
   theme_classic(base_size = 18)
-ggsave("CrossValidationV.png",width = 3, height=8)
+ggsave("CrossValidationV.png",width = 4, height=4)
 
