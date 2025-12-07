@@ -1,0 +1,35 @@
+
+#!/bin/bash
+BAM=/ruta/a/finwhale.bam
+REF=/ruta/a/reference.fa
+OUT=finwhale_psmc
+MIN_DP=8
+MAX_DP=60
+THREADS=8
+
+# 1) mpileup -> vcf -> fq
+samtools mpileup -C50 -q20 -Q20 -uf $REF $BAM | \
+  bcftools call -c -V indels -Ov | \
+  vcfutils.pl vcf2fq -d $MIN_DP -D $MAX_DP -Q20 > ${OUT}.fq
+
+# 2) fq -> psmcfa
+fq2psmcfa -q20 ${OUT}.fq > ${OUT}.psmcfa
+
+
+#"4+25*2+4+6" Este parámetro describe cómo PSMC divide el genoma en intervalos de tiempo para estimar el tamaño efectivo poblacional (Ne) en el pasado.
+# Es, básicamente, la forma en que PSMC define su “resolución temporal”.
+#PSMC necesita dividir el pasado en bins (intervalos) donde la tasa de coalescencia se asume constante.
+#a + b*c + d + e
+#a = número de intervalos muy recientes
+#b = número de intervalos base
+#c = cuántas veces se repiten esos intervalos
+#d = intervalos intermedios
+#e = intervalos muy antiguos
+
+# 3) run psmc
+psmc -N25 -t15 -r5 -p "4+25*2+4+6" -o ${OUT}.psmc ${OUT}.psmcfa
+
+# 4) plot (ajusta mu y gen)
+MUT=1e-8
+GEN=20
+psmc_plot.pl -u $MUT -g $GEN ${OUT} ${OUT}.psmc
